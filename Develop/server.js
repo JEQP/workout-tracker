@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // don't know if databaseURL needs this or just workoutTracker
-const databaseUrl = "workoutTracker";
+const databaseUrl = "mongodb://localhost/workoutTracker";
 const collections = ["workouts"];
 
 // mongojs (connectionString, collections(analogous to table))
@@ -29,6 +29,8 @@ const db = mongojs(databaseUrl, collections);
 db.on("error", error => {
   console.log("Database Error:", error);
 });
+
+// HTML ROUTES
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/public/index.html"));
@@ -46,6 +48,8 @@ app.get("/stats", (req, res) => {
 
 // one database, with entries of workouts. The exercises go in an array of objects in the workeout entries.
 
+// API ROUTES
+
 // for getlastworkout() in api.js
 app.get("/api/workouts", (req, res) => {
   db.workouts.find({}, (error, data) => {
@@ -58,100 +62,37 @@ app.get("/api/workouts", (req, res) => {
 });
 
 
+
+
 // for addexercise()
-// app.post("/submit", ({ body }, res) => {
-//   db.Note.create(body)
-//     .then(({ _id }) => db.User.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
-//     .then(dbUser => {
-//       res.json(dbUser);
-//     })
-//     .catch(err => {
-//       res.json(err);
-//     });
-// });
-// http://localhost:3000/api/workouts/5e72b46131c6372d4536dbc1
-app.post("api/workouts/:id", (req, res) => {
 
-  db.collection("workouts").insertOne(
-    {
-      "_id": ObjectID(req.params.id)
-    },
-    {
-      $set: {
-        day: new Date().setDate(new Date().getDate()),
-        exercises: [
-          {
-            type: req.body.type,
-            name: req.body.name,
-            duration: req.body.duration,
-            weight: req.body.weight,
-            reps: req.body.reps,
-            sets: req.body.sets,
-            distance: req.body.distanc
-          }
-        ]
-      }
-    }
-  )
+// This is creating a new workout, and not adding the data in the body. 
+app.put("/api/workouts/:id", (req, res) => {
+  console.log("api body: " + JSON.stringify(req.body));
+  console.log("body is " + typeof req.body);
+  // var body = JSON.stringify(req.body);
+
+  // // body = body.split("{")[1];
+  // // body = body.split("}")[0];
+  // // body = "["+body+"]";
+  // console.log(body);
+  Workout.findByIdAndUpdate( req.params.id, 
+    { $push: {exercises: req.body}},
+    {new: true, runValidators: true})
+    .then(Workout => {
+      res.json(Workout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+  
 });
-
-// app.post("api/workouts/:id", (req, res) => {
-//   db.collection("workouts").updateOne(
-//     {
-//       "_id": ObjectID(req.params.id)
-//     },
-//     {
-//       $set: {
-//         day: new Date().setDate(new Date().getDate()),
-//         exercises: [
-//           {
-//             type: req.body.type,
-//             name: req.body.name,
-//             duration: req.body.duration,
-//             weight: req.body.weight,
-//             reps: req.body.reps,
-//             sets: req.body.sets,
-//             distance: req.body.distance
-//           }
-//         ]
-//       }
-//     }
-//   )
-// });
-
-// app.post("api/workouts/:id", (req, res) => {
-//   console.log("body: " + JSON.stringify(req.body));
-//   db.workouts.insertOne(
-//     {
-//       "_id": ObjectID(req.params.id)
-//     },
-//     {
-//       $set: {
-//         type: req.body.type,
-//         name: req.body.name,
-//         duration: req.body.duration,
-//         weight: req.body.duration,
-//         reps: req.body.reps,
-//         sets: req.body.sets,
-//         distance: req.body.distance
-//       }
-//     },
-//     (error, data) => {
-//       if (error) {
-//         res.send(error);
-//       } else {
-//         res.send(data);
-//       }
-//     }
-//   );
-// });
-
 
 
 // for createWorkout() mongo creates a new collection when one is referenced (maybe use insert instead of create)
 
 app.post("/api/workouts", ({ body }, res) => {
-  console.log("body: " + JSON.stringify(body));
+  console.log("create workout body: " + JSON.stringify(body));
   Workout.create(body)
     .then(dbWorkout => {
       console.log("deWorkout: " + JSON.stringify(dbWorkout));
@@ -174,90 +115,9 @@ app.get("/api/workouts/range", (req, res) => {
     }
   });
 });
-// below was copied from other exercises. Fix it.
 
-db.on("error", error => {
-  console.log("Database Error:", error);
-});
-
-
-
-app.post("/submit", (req, res) => {
-  console.log(req.body);
-
-  db.notes.insert(req.body, (error, data) => {
-    if (error) {
-      res.send(error);
-    } else {
-      res.send(data);
-    }
-  });
-});
-
-app.get("/all", (req, res) => {
-  db.notes.find({}, (error, data) => {
-    if (error) {
-      res.send(error);
-    } else {
-      res.json(data);
-    }
-  });
-});
-
-app.get("/find/:id", (req, res) => {
-  db.notes.findOne(
-    {
-      _id: mongojs.ObjectId(req.params.id)
-    },
-    (error, data) => {
-      if (error) {
-        res.send(error);
-      } else {
-        res.send(data);
-      }
-    }
-  );
-});
-
-app.post("/update/:id", (req, res) => {
-  db.notes.update(
-    {
-      _id: mongojs.ObjectId(req.params.id)
-    },
-    {
-      $set: {
-        title: req.body.title,
-        note: req.body.note,
-        modified: Date.now()
-      }
-    },
-    (error, data) => {
-      if (error) {
-        res.send(error);
-      } else {
-        res.send(data);
-      }
-    }
-  );
-});
-
-app.delete("/delete/:id", (req, res) => {
-  db.notes.remove(
-    {
-      _id: mongojs.ObjectID(req.params.id)
-    },
-    (error, data) => {
-      if (error) {
-        res.send(error);
-      } else {
-        res.send(data);
-      }
-    }
-  );
-});
-
-app.delete("/clearall", (req, res) => {
-  db.notes.remove({}, (error, response) => {
+app.delete("/api/workouts", (req, res) => {
+  db.Workout.remove({}, (error, response) => {
     if (error) {
       res.send(error);
     } else {
@@ -265,6 +125,8 @@ app.delete("/clearall", (req, res) => {
     }
   });
 });
+
+
 
 app.listen(3000, () => {
   console.log("App running on port 3000!");

@@ -377,7 +377,7 @@ form > button {
 }
 
 .new-workout {
-  /* display: none; */
+  display: none;
 }
 
 .mt {

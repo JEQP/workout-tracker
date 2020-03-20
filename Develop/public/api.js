@@ -11,7 +11,7 @@ const API = {
     return json[json.length - 1];
   },
   async addExercise(data) {
-    // console.log("data: " + JSON.stringify(data)); gives data: {"type":"cardio","name":"Jogging","distance":10,"duration":20}
+    console.log("api data: " + JSON.stringify(data)); // gives data: {"type":"cardio","name":"Jogging","distance":10,"duration":20}
     // location.search will give everything in the url including and after the ?.  split("=") splits this string into two at the =, and keeps the second one (1 in array)
     console.log("location: " + location.search); 
     
