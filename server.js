@@ -10,7 +10,7 @@ const Workout = require("./models/workoutModel.js");
 
 var PORT = process.env.PORT || 3000;
 
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true });
 
 
 app.use(logger("dev"));
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // const databaseUrl = "mongodb://localhost/workoutTracker";
-const databaseUrl = MONGODB_URI;
+const databaseUrl = process.env.DATABASE_URI;
 const collections = ["workouts"];
 
 const db = mongojs(databaseUrl, collections);
