@@ -9,3 +9,11 @@ For this project I created a Mongo database using a Mongoose schema, and handled
 
 Deployed URL: [http://agile-thicket-87690.herokuapp.com/](http://agile-thicket-87690.herokuapp.com/)
 
+### Landing Page
+![Landing Page](https://github.com/JEQP/workout-tracker/blob/master/start.jpg)
+
+### Add Excerises
+![Add Exercises](https://github.com/JEQP/workout-tracker/blob/master/add.jpg)
+
+### Display Stats
+![Stats](https://github.com/JEQP/workout-tracker/blob/master/stats.jpg)
