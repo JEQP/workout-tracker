@@ -19,7 +19,8 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-const databaseUrl = "mongodb://localhost/workoutTracker";
+// const databaseUrl = "mongodb://localhost/workoutTracker";
+const databaseUrl = MONGODB_URI;
 const collections = ["workouts"];
 
 const db = mongojs(databaseUrl, collections);
