@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const app = express();
 const Workout = require("./models/workoutModel.js");
 
+var PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
 
@@ -109,6 +110,6 @@ app.delete("/api/workouts", (req, res) => {
 
 
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("App running on port 3000!");
 });
