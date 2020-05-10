@@ -6,6 +6,7 @@ On loading the page it detects their most recent workout, to which they can add 
 
 ### Main responsibilities:
 For this project I created a Mongo database using a Mongoose schema, and handled the API and HTML routes using Express. 
+API routes include find, findByIdAndUpdate, create, and remove. 
 
 Deployed URL: [http://agile-thicket-87690.herokuapp.com/](http://agile-thicket-87690.herokuapp.com/)
 
