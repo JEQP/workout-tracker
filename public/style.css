@@ -98,6 +98,7 @@ input {
 .wrapper {
   background-color: #f2f8ff;
   padding-bottom: 100px;
+  background-image: url("./exercise.jpg");
 }
 
 .card.m-auto,
